@@ -1,0 +1,26 @@
+name: 1. Code Quality Check (Linter)
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      # 講義資料 P.30-31 を参考に、チェックのみ行います
+      - name: Run Ruff (Linter)
+        run: ruff check .
+      
+      # フォーマット確認（修正が必要ならエラーを出す）
+      - name: Check Formatting
+        run: ruff format --check .

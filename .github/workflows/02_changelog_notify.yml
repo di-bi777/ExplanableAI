@@ -1,0 +1,44 @@
+name: 2. Update Changelog & Notify
+
+# mainブランチにpushされた時のみ実行（開発中は頻繁に通知が来ないようにするため）
+on:
+  push:
+    branches:
+      - main
+
+# 変更履歴ファイルへ書き込むための権限設定
+permissions:
+  contents: write
+
+jobs:
+  changelog-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 履歴を全て取得するために必要
+
+      # --- ここから変更履歴の自動更新 (未習項目 1) ---
+      - name: Generate Changelog
+        uses: TriPSs/conventional-changelog-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: "CHANGELOG.md" # このファイル名で出力・更新される
+          skip-version-file: "true"   # package.jsonなどがなくても動くようにする設定
+
+      - name: Commit Changelog
+        # 変更があった場合のみコミットしてPushする
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update CHANGELOG.md"
+          file_pattern: "CHANGELOG.md"
+
+      # --- ここからSlack通知 (未習項目 2) ---
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }} # 手順1で設定した鍵を使う
+          SLACK_TITLE: "CI/CD Finished"
+          SLACK_MESSAGE: "mainブランチが更新され、変更履歴(CHANGELOG)が更新されました！"
+          SLACK_COLOR: good
