@@ -60,12 +60,12 @@ pip install -r requirements.txt
 
 ### Running ExplainableAI.py
 ```bash
-streamlit run ExplanableAI/ExplainableAI.py
+streamlit run ExplanableAI/ExplainableAIApp.py
 ```
 
 ### Running ExplainableAI2.py
 ```bash
-streamlit run ExplanableAI/ExplainableAI2.py
+streamlit run ExplanableAI/ExplainableAIApp2.py
 ```
 
 ### Example Datasets
